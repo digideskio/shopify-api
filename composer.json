@@ -9,7 +9,7 @@
 		}
 	],
 	"require": {
-		"monolog/monolog": "1.11.0",
+		"monolog/monolog": "1.11.0"
 	},
 	"autoload": {
 		"classmap": ["src/"]
