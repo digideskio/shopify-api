@@ -1,0 +1,17 @@
+{
+	"name": "owc/shopify-api",
+	"description": "PHP integration with Shopify API.",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "antoniozzo",
+			"email": "info@antoniorizzo.com"
+		}
+	],
+	"require": {
+		"monolog/monolog": "1.11.0",
+	},
+	"autoload": {
+		"classmap": ["src/"]
+	}
+}
