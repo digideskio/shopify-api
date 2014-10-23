@@ -15,16 +15,19 @@ class Store {
 	*/
 
 	// Shopify api domain
-	private $url = 'myshopify.com/admin';
+	private static $url = 'myshopify.com/admin';
 
 	// The name of your Shopify store
-	private $name = '';
+	private static $name = '';
 
 	// Api key for the private app on your store
-	private $key  = '';
+	private static $key  = '';
 
 	// Password for the private app on your store
-	private $pass = '';
+	private static $pass = '';
+
+	// Logger
+	private static $log = null;
 
 	/*
 	|-----------------------------------------------------------
@@ -34,14 +37,14 @@ class Store {
 
 	public function __construct( $props ) {
 		foreach ( $props as $key => $value ) {
-			if ( isset( $this->{$key} ) ) {
-				$this->{$key} = $value;
+			if ( isset( Store::${$key} ) ) {
+				Store::${$key} = $value;
 			}
 		}
 
 		// create a log channel
-		$this->log = new Logger( 'store' );
-		$this->log->pushHandler( new StreamHandler( dirname( __FILE__ ) . '/../store.log', Logger::DEBUG ) );
+		Store::$log = new Logger( 'store' );
+		Store::$log->pushHandler( new StreamHandler( dirname( __FILE__ ) . '/../store.log', Logger::DEBUG ) );
 	}
 
 	/*
@@ -50,11 +53,11 @@ class Store {
 	|-----------------------------------------------------------
 	*/
 
-	public function get_url( $append = '/' ) {
-		return 'https://' . $this->key
-			. ':' . $this->pass
-			. '@' . $this->name
-			. '.' . $this->url
+	public static function get_url( $append = '/' ) {
+		return 'https://' . Store::$key
+			. ':' . Store::$pass
+			. '@' . Store::$name
+			. '.' . Store::$url
 			. $append;
 	}
 
@@ -65,14 +68,14 @@ class Store {
 	*/
 
 	// generic
-	public function post( $url, $data = false )   { return $this->call_api( 'POST', $url, $data ); }
-	public function put( $url, $data = false )    { return $this->call_api( 'PUT', $url, $data ); }
-	public function get( $url, $data = false )    { return $this->call_api( 'GET', $url, $data ); }
-	public function delete( $url, $data = false ) { return $this->call_api( 'DELETE', $url, $data ); }
+	public static function post( $url, $data = false )   { return Store::call_api( 'POST', $url, $data ); }
+	public static function put( $url, $data = false )    { return Store::call_api( 'PUT', $url, $data ); }
+	public static function get( $url, $data = false )    { return Store::call_api( 'GET', $url, $data ); }
+	public static function delete( $url, $data = false ) { return Store::call_api( 'DELETE', $url, $data ); }
 
 	// call the Shopify api
-	private function call_api( $method, $url, $raw_data = false ) {
-		$url = $this->get_url( $url );
+	public static function call_api( $method, $url, $raw_data = false ) {
+		$url = Store::get_url( $url );
 
 		$data = http_build_query( $raw_data );
 		 
@@ -102,7 +105,7 @@ class Store {
 		$response = curl_exec($ch);
 		curl_close($ch);
 
-		$this->log->addInfo(
+		Store::$log->addInfo(
 			'Shopify',
 			compact( 'url', 'method', 'data', 'response' )
 		);
