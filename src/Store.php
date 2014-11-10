@@ -74,7 +74,7 @@ class Store {
 	public static function delete( $url, $data = false ) { return Store::call_api( 'DELETE', $url, $data ); }
 
 	// call the Shopify api
-	public static function call_api( $method, $url, $raw_data = false ) {
+	public static function call_api( $method, $url, $raw_data = array() ) {
 		$url = Store::get_url( $url );
 
 		$data = http_build_query( $raw_data );
